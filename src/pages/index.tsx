@@ -117,7 +117,7 @@ const Home: NextPage = () => {
           test protected
         </button>
         <br />
-        <button
+        {/* <button
           onClick={() => {
             setIsEnableServerSIWE(true);
           }}
@@ -130,7 +130,7 @@ const Home: NextPage = () => {
           }}
         >
           disable server auth
-        </button>
+        </button> */}
         <br />
         <button
           disabled={!forceDeploy}
