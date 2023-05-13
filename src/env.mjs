@@ -24,6 +24,7 @@ export const env = createEnv({
     // DISCORD_CLIENT_ID: z.string(),
     // DISCORD_CLIENT_SECRET: z.string(),
     // NEXT_PUBLIC_ZERODEV_PROJECT_ID: z.string(),
+    NEXT_PUBLIC_ALCHEMY_API_KEY_CLIENT: z.string(),
   },
 
   /**

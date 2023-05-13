@@ -13,7 +13,10 @@ import {
   useContractWrite,
   useWaitForTransaction,
 } from "wagmi";
-import { useWaitForAATransaction } from "@zerodevapp/wagmi";
+import {
+  usePrepareContractBatchWrite,
+  useWaitForAATransaction,
+} from "@zerodevapp/wagmi";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
@@ -41,16 +44,36 @@ const Home: NextPage = () => {
     args: [addressWallet],
   });
 
-  const { config } = usePrepareContractWrite({
-    address: "0xbe49ac1EadAc65dccf204D4Df81d650B50122aB2", // dummy contract to force deploy
-    abi: [
-      "function mint(address account, uint256 amount) public returns (bool)",
-    ],
-    functionName: "mint",
-    args: [addressWallet, ethers.utils.parseEther("1")],
-    // enabled: addressWallet === undefined,
-  });
-  const { data, writeAsync: forceDeploy } = useContractWrite({
+  //   const { config } = usePrepareContractWrite({
+  //     address: "0xbe49ac1EadAc65dccf204D4Df81d650B50122aB2", // dummy contract to force deploy
+  //     abi: [
+  //       "function mint(address account, uint256 amount) public returns (bool)",
+  //     ],
+  //     functionName: "mint",
+  //     args: [addressWallet, ethers.utils.parseEther("1")],
+  //     // enabled: addressWallet === undefined,
+  //   });
+  //   const { data, writeAsync: forceDeploy } = useContractWrite({
+  //     ...config,
+  //     onSuccess: () => {
+  //       console.log("SENT!!!");
+  //     },
+  //   });
+  //   useWaitForAATransaction({
+  //     wait: data?.wait,
+  //     onSuccess: () => {
+  //       console.log("DONE!!!");
+  //     },
+  //   });
+
+  const { config } = usePrepareSendTransaction({
+    request: {
+      to: ethers.constants.AddressZero,
+      value: ethers.utils.parseEther("0"),
+    },
+  }); // TO FORCE DEPLOY // TODO: do a custom contract in which can check if forcedeployed or not with MINIMAL gas usage
+
+  const { data, isLoading, isSuccess, sendTransaction } = useSendTransaction({
     ...config,
     onSuccess: () => {
       console.log("SENT!!!");
@@ -63,25 +86,7 @@ const Home: NextPage = () => {
     },
   });
 
-  //   const { config } = usePrepareSendTransaction({
-  //     request: {
-  //       to: ethers.constants.AddressZero,
-  //       value: ethers.utils.parseEther("0.001"),
-  //     },
-  //   });
-
-  //   const { data, isLoading, isSuccess, sendTransaction } = useSendTransaction({
-  //     ...config,
-  //     onSuccess: () => {
-  //       console.log("SENT!!!");
-  //     },
-  //   });
-  //   useWaitForAATransaction({
-  //     wait: data?.wait,
-  //     onSuccess: () => {
-  //       console.log("DONE!!!");
-  //     },
-  //   });
+  //   usePrepareContractBatchWrite({});
 
   return (
     <>
@@ -133,12 +138,12 @@ const Home: NextPage = () => {
         </button> */}
         <br />
         <button
-          disabled={!forceDeploy}
+          disabled={!sendTransaction}
           // eslint-disable-next-line
           onClick={async () => {
-            if (!forceDeploy) return;
+            if (!sendTransaction) return;
             // eslint-disable-next-line
-            await forceDeploy?.();
+            await sendTransaction?.();
           }}
         >
           force deploy

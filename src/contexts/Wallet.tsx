@@ -76,10 +76,10 @@ const connectors = connectorsForWallets([
     groupName: "Other",
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     wallets: [
-      //   googleWallet({
-      //     chains: chains,
-      //     options: { projectId: ZERODEV_PROJECT_ID },
-      //   }),
+      googleWallet({
+        chains: chains,
+        options: { projectId: ZERODEV_PROJECT_ID },
+      }),
       enhanceWalletWithAAConnector(metaMaskWallet({ chains }), {
         projectId: ZERODEV_PROJECT_ID,
       }),
@@ -106,7 +106,7 @@ const WalletProvider = ({
   children: ReactNode;
   session: Session | null;
 }) => {
-  const [isEnableServerSIWE, setIsEnableServerSIWE] = useState<boolean>(false);
+  const [isEnableServerSIWE, setIsEnableServerSIWE] = useState<boolean>(false); // deprecated
 
   const contextProvider = { isEnableServerSIWE, setIsEnableServerSIWE };
 
@@ -115,7 +115,6 @@ const WalletProvider = ({
       <SessionProvider session={session}>
         <WagmiConfig client={wagmiConfig}>
           <RainbowKitSiweNextAuthProvider
-            // enabled={isEnableServerSIWE}
             getSiweMessageOptions={getSiweMessageOptions}
           >
             <RainbowKitProvider

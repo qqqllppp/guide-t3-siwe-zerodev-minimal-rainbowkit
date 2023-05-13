@@ -20,4 +20,5 @@
 13. install @zerodevapp/wagmi latest
 14. edit `_app.tsx` as usual
 15. add `transpilePackages: ["@zerodevapp", "@web3"],` to `next.config.mjs`
-16. check test/force signing
+16. add `provider` to `siwe.verify` in `server/auth.ts`
+17. check test/force signing

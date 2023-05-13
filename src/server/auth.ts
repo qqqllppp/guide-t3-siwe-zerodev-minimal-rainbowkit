@@ -13,6 +13,8 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 import { SiweMessage } from "siwe";
+import { AlchemyProvider } from "@ethersproject/providers";
+import { polygonMumbai } from "wagmi/chains";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -108,9 +110,20 @@ export const authOptions: (ctxReq: CtxOrReq) => NextAuthOptions = ({
           );
           // Fix for next-auth@4.21.1
           const nonce = await getCsrfToken({ req: { headers: req?.headers } });
-          const { data } = await siwe.verify({
-            signature: credentials?.signature || "",
-          });
+
+          const nodeProvider = new AlchemyProvider(
+            polygonMumbai.id,
+            env.NEXT_PUBLIC_ALCHEMY_API_KEY_CLIENT
+          );
+
+          const { data } = await siwe.verify(
+            {
+              signature: credentials?.signature || "",
+            },
+            {
+              provider: nodeProvider, // important for force deploy !!!
+            }
+          );
 
           if (data.nonce !== nonce) {
             return null;
